@@ -86,7 +86,7 @@ int main()
 	 // Printing loop
 	 for (int i = 0; i <  point_1.x_position.size(); ++i)
 	 {
-	 	cout << point_1.x_position[i] << endl;
+	 	cout << point_1.x_position[i] <<"," << endl;
 	 }
 	 
 
