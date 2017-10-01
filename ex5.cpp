@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <vector> 
 #include <math.h> 
 
@@ -10,7 +11,7 @@ double velocity_verlet(double ux_01, double force_old,double force_new, double t
 
 int main()
 {
-	int t_steps = 100;
+	int t_steps = 50;
 	double t = 1.;
 	struct point_data
 	 {
@@ -52,8 +53,10 @@ int main()
 	 	double ux_02 = point_2.x_velocity[i];
 	 	double uy_02 = point_2.y_velocity[i];
 
-	 	double force_old_12 = force(x_01,y_01,x_02,y_02);
-	 	double force_old_21 = force(x_02,y_02,x_01,y_01);
+	 	double force_old_12_x = force(x_01,y_01,x_02,y_02);
+	 	double force_old_12_y = force(y_01,x_01,y_02,x_02);
+	 	double force_old_21_x = force(x_02,y_02,x_01,y_01);
+	 	double force_old_21_y = force(y_02,x_02,y_01,x_01);
 
 	 	//Initially the first point mass stays at rest and the second one moves. Its new position:
 	 	double x_2new = verlet_alg(x_01, y_01, x_02, y_02, ux_02, dt);
@@ -71,34 +74,46 @@ int main()
 	 	point_1.y_position.push_back(y_1new);
 	 	/////
 
-	 	double force_new_12 = force(x_1new,y_1new,x_2new,y_2new);
-	 	double force_new_21 = force(x_2new, y_2new, x_1new,y_1new);
+	 	double force_new_12_x = force(x_1new,y_1new,x_2new,y_2new);
+	 	double force_new_12_y = force(y_1new,x_1new,y_2new,x_2new);
+	 	double force_new_21_x = force(x_2new, y_2new, x_1new,y_1new);
+	 	double force_new_21_y = force(y_2new,x_2new,y_1new,x_1new);
 
 	 	//Now, the velocities 
-	 	double ux_2new = velocity_verlet(ux_02,force_old_12,force_new_12,dt);
+	 	double ux_2new = velocity_verlet(ux_02,force_old_12_x,force_new_12_x,dt);
 	 	point_2.x_velocity.push_back(ux_2new);
 	 	//similar with the displacement (i hope)
-	 	double uy_2new = velocity_verlet(uy_02,force_old_12,force_new_12,dt);
+	 	double uy_2new = velocity_verlet(uy_02,force_old_12_y,force_new_12_y,dt);
 	 	point_2.y_velocity.push_back(uy_2new);
 
-	 	double ux_1new = velocity_verlet(ux_01,force_old_21,force_new_21,dt);
+	 	double ux_1new = velocity_verlet(ux_01,force_old_21_x,force_new_21_x,dt);
 	 	point_1.x_velocity.push_back(ux_1new);
 	 	//similar with the displacement (i hope)
-	 	double uy_1new =  velocity_verlet(uy_01,force_old_21,force_new_21,dt);
+	 	double uy_1new =  velocity_verlet(uy_01,force_old_21_y,force_new_21_y,dt);
 	 	point_2.y_velocity.push_back(uy_1new);
 
 	 	///All these additional variables are not needed but it is more readable that way. This must be reconsidered.
 	 }
 
+	  ofstream myfile;
 
 	 // Printing loop
+	 myfile.open ("data1.txt");
 	 for (int i = 0; i <  point_1.x_position.size(); ++i)
 	 {
+	 	t_tot = t_tot + dt;
 	 	// cout << point_1.x_position[i] <<"," << endl;
-	 	// cout << pow(pow(point_1.x_position[i],2.) + pow(point_1.x_position[i],2.),0.5) <<"," << endl;
-	 	cout << pow(pow(point_2.y_position[i]-point_1.y_position[i],2.) + pow(point_2.x_position[i]-point_1.x_position[i],2.),0.5) <<"," << endl;
+	 	// cout << pow(pow(point_1.x_position[i],2.) + pow(point_1.y_position[i],2.),0.5) <<"," << endl;
+	 	//cout << pow(pow(point_2.y_position[i]-point_1.y_position[i],2.) + pow(point_2.x_position[i]-point_1.x_position[i],2.),0.5) <<"," << endl;
+	 	
+  		myfile << pow(pow(point_2.y_position[i]-point_1.y_position[i],2.) + pow(point_2.x_position[i]-point_1.x_position[i],2.),0.5) <<",";
+  		myfile << pow(pow(point_1.x_position[i],2.) + pow(point_1.y_position[i],2.),0.5) <<",";
+  		myfile << pow(pow(point_2.x_position[i],2.) + pow(point_2.y_position[i],2.),0.5) <<",";
+  		myfile << pow(pow(point_1.x_velocity[i],2.) + pow(point_1.y_velocity[i],2.),0.5) <<",";
+  		myfile << pow(pow(point_2.x_velocity[i],2.) + pow(point_2.y_velocity[i],2.),0.5) <<",";
+  		myfile << t_tot <<endl;
 	 }
-	 
+	 myfile.close();
 
 
 
@@ -124,7 +139,7 @@ double verlet_alg(double x_01, double y_01, double x_02, double y_02, double ux_
 
 double velocity_verlet(double ux_02, double force_old,double force_new, double t){
 	double vel;
-	vel = ux_02 + (force_old + force_new)/2. * t;
+	vel = ux_02 + ((force_old + force_new)/2.) * t;
 
 	return vel;
 }
