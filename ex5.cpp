@@ -101,16 +101,20 @@ int main()
 	 myfile.open ("data1.txt");
 	 for (int i = 0; i <  point_1.x_position.size(); ++i)
 	 {
-	 	t_tot = t_tot + dt;
+	 	t_tot += dt;
 	 	// cout << point_1.x_position[i] <<"," << endl;
 	 	// cout << pow(pow(point_1.x_position[i],2.) + pow(point_1.y_position[i],2.),0.5) <<"," << endl;
 	 	//cout << pow(pow(point_2.y_position[i]-point_1.y_position[i],2.) + pow(point_2.x_position[i]-point_1.x_position[i],2.),0.5) <<"," << endl;
 	 	
-  		myfile << pow(pow(point_2.y_position[i]-point_1.y_position[i],2.) + pow(point_2.x_position[i]-point_1.x_position[i],2.),0.5) <<",";
-  		myfile << pow(pow(point_1.x_position[i],2.) + pow(point_1.y_position[i],2.),0.5) <<",";
-  		myfile << pow(pow(point_2.x_position[i],2.) + pow(point_2.y_position[i],2.),0.5) <<",";
-  		myfile << pow(pow(point_1.x_velocity[i],2.) + pow(point_1.y_velocity[i],2.),0.5) <<",";
-  		myfile << pow(pow(point_2.x_velocity[i],2.) + pow(point_2.y_velocity[i],2.),0.5) <<",";
+  		myfile << sqrt(pow(point_2.y_position[i]-point_1.y_position[i],2.) + pow(point_2.x_position[i]-point_1.x_position[i],2.)) <<"\t";
+  		myfile << sqrt(pow(point_1.x_position[i],2.) + pow(point_1.y_position[i],2.)) <<"\t";
+  		myfile << sqrt(pow(point_2.x_position[i],2.) + pow(point_2.y_position[i],2.)) <<"\t";
+  		myfile << sqrt(pow(point_1.x_velocity[i],2.) + pow(point_1.y_velocity[i],2.)) <<"\t";
+  		myfile << sqrt(pow(point_2.x_velocity[i],2.) + pow(point_2.y_velocity[i],2.)) <<"\t";
+  		myfile << point_1.x_position[i] << "\t";
+  		myfile << point_1.y_position[i] << "\t";
+  		myfile << point_2.x_position[i] << "\t";
+  		myfile << point_2.y_position[i] << "\t";
   		myfile << t_tot <<endl;
 	 }
 	 myfile.close();
