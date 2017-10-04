@@ -19,6 +19,7 @@ int main(int argc, char const *argv[])
 	//So we calculate the number
 	while(i<N){
 		j = 0;
+		node_num[i] = 0;
 		while (j<N){
 			if (i == j){
 				j++;
